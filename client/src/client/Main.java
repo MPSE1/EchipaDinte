@@ -22,8 +22,8 @@ public class Main extends Application{
         primaryStage.setTitle("Game");
         r.setX(50);
         r.setY(50);
-        r.setWidth(50);
-        r.setHeight(50);
+        r.setWidth(25);
+        r.setHeight(25);
         r.setArcWidth(20);
         r.setArcHeight(20);
         r.setFill(Color.AQUA);
@@ -31,7 +31,7 @@ public class Main extends Application{
         
         root = new Pane();
         root.getChildren().add(r);
-        Scene scene = new Scene(root, 800, 600);
+        Scene scene = new Scene(root, 800, 800);
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 
 			@Override
