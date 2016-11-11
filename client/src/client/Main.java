@@ -70,55 +70,56 @@ public class Main extends Application{
 			}
 
 			private boolean checkCollisions(KeyCode up) {
-//				switch (up) {
-//				case UP:
-//					int x = Connect.state.posX - speed;
-//					int y = Connect.state.posY;
-//					if( x< 0 || x >= 800 || y<0 || y>= 800)
-//						return false;
-//					if (map[x][y] == 1)
-//						return false;
-//					
-//					if (map[x + playerSize][y] == 1)
-//						return false;
-//					break;
-//				case DOWN:
-//					 x = Connect.state.posX + speed;
-//					 y = Connect.state.posY;
-//					 if( x< 0 || x >= 800 || y<0 || y>= 800)
-//							return false;
-//					if (map[x+ playerSize][y+ playerSize] == 1)
-//						return false;
-//					
-//					if (map[x + playerSize][y] == 1)
-//						return false;
-//					break;
-//					
-//				case LEFT:
-//					 x = Connect.state.posX ;
-//					 y = Connect.state.posY - speed;
-//					 if( x< 0 || x >= 800 || y<0 || y>= 800)
-//							return false;
-//					if (map[x][y] == 1)
-//						return false;
-//					
-//					if (map[x + playerSize][y] == 1)
-//						return false;
-//					break;
-//				case RIGHT:
-//					 x = Connect.state.posX ;
-//					 y = Connect.state.posY + speed;
-//					 if( x< 0 || x >= 800 || y<0 || y>= 800)
-//							return false;
-//					if (map[x][y+ playerSize] == 1)
-//						return false;
-//					
-//					if (map[x + playerSize][y + playerSize] == 1)
-//						return false;
-//					break;	
-//				default:
-//					break;
-//				}
+				switch (up) {
+				case UP:
+					int x = Connect.state.posX;
+					int y = Connect.state.posY - speed;
+					if( x< 0 || x >= 600 || y<0 || y>= 600)
+						return false;
+					if (map[x][y] == 1)
+						return false;
+					
+					if (map[x + playerSize][y] == 1)
+						return false;
+					break;
+				case DOWN:
+					 x = Connect.state.posX ;
+					 y = Connect.state.posY+ speed;
+					 System.out.println(x + " ****************" + y);
+					 if( x< 0 || x >= 600 || y<0 || y>= 600 || y+playerSize >600)
+							return false;
+					if (map[x+ playerSize][y+ playerSize] == 1)
+						return false;
+					
+					if (map[x ][y+ playerSize] == 1)
+						return false;
+					break;
+					
+				case LEFT:
+					 x = Connect.state.posX - speed;
+					 y = Connect.state.posY ;
+					 if( x< 0 || x >= 600 || y<0 || y>= 600)
+							return false;
+					if (map[x][y] == 1)
+						return false;
+					
+					if (map[x ][y+ playerSize] == 1)
+						return false;
+					break;
+				case RIGHT:
+					 x = Connect.state.posX  + speed;
+					 y = Connect.state.posY;
+					 if( x< 0 || x >= 600 || y<0 || y>= 600 || x+playerSize >=601)
+							return false;
+					if (map[x+ playerSize][y] == 1)
+						return false;
+					
+					if (map[x + playerSize][y + playerSize] == 1)
+						return false;
+					break;	
+				default:
+					break;
+				}
 				return true;
 			}
 		});
@@ -158,8 +159,8 @@ public class Main extends Application{
 	}
 	
 	private void addToMap(int x, int y, int width, int height) {
-		for (int i = x; i < x+ width; i++) {
-			for (int j = y; j < y+height; j++) {
+		for (int i = x+1; i < x+ width-1; i++) {
+			for (int j = y+1; j < y+height-1; j++) {
 				map[i][j] = 1 ;
 			}
 		}
