@@ -69,8 +69,8 @@ public class Main extends Application{
 				}
 			}
 
-			private boolean checkCollisions(KeyCode up) {
-				switch (up) {
+			private boolean checkCollisions(KeyCode direction) {
+				switch (direction) {
 				case UP:
 					int x = Connect.state.posX;
 					int y = Connect.state.posY - speed;
