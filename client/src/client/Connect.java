@@ -61,8 +61,8 @@ public class Connect implements Runnable {
 							state.lifes = Integer.parseInt(in.readUTF());
 							state.doctor = Integer.parseInt(in.readUTF());
 							if (state.posX != null) {
-								Main.r.setX(state.posX);
-								Main.r.setY(state.posY);
+								Main.playerRectangle.setX(state.posX);
+								Main.playerRectangle.setY(state.posY);
 							}
 							othersState.add(new State(state.posX, state.posY, state.lifes, state.doctor));
 							if (Main.players.size() <= i) {
@@ -74,8 +74,8 @@ public class Connect implements Runnable {
 							}
 							Main.players.get(i).setX(othersState.lastElement().posX);
 							Main.players.get(i).setY(othersState.lastElement().posY);
-							Main.players.get(i).setWidth(50);
-							Main.players.get(i).setHeight(50);
+							Main.players.get(i).setWidth(Main.playerSize);
+							Main.players.get(i).setHeight(Main.playerSize);
 							Main.players.get(i).setArcWidth(20);
 							Main.players.get(i).setArcHeight(20);
 						} else {
@@ -96,8 +96,8 @@ public class Connect implements Runnable {
 							}
 							Main.players.get(i).setX(othersState.lastElement().posX);
 							Main.players.get(i).setY(othersState.lastElement().posY);
-							Main.players.get(i).setWidth(50);
-							Main.players.get(i).setHeight(50);
+							Main.players.get(i).setWidth(Main.playerSize);
+							Main.players.get(i).setHeight(Main.playerSize);
 							Main.players.get(i).setArcWidth(20);
 							Main.players.get(i).setArcHeight(20);
 						}
