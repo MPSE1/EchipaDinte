@@ -3,6 +3,7 @@ package server;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.net.Socket;
+import java.util.Random;
 import java.util.Vector;
 
 public class Worker implements Runnable {
@@ -11,12 +12,17 @@ public class Worker implements Runnable {
 	protected State state;
 	protected int number = -1;
 	public static Vector<State> allStates = new Vector<State>();
+	
+	private String mapFileName;
 
-	public Worker(Socket clntSocket, String txtFrmSrvr, int numberOfPlayer) {
+	public Worker(Socket clntSocket, String txtFrmSrvr, int numberOfPlayer, String fileName) {
 		this.clntSocket = clntSocket;
 		this.txtFrmSrvr = txtFrmSrvr;
 		this.number = numberOfPlayer;
 		allStates.add(new State());
+		
+		// Random map
+		mapFileName = fileName;
 	}
 
 	public void run() {
@@ -28,7 +34,9 @@ public class Worker implements Runnable {
 
 			System.out.println(in.readUTF());
 			DataOutputStream out = new DataOutputStream(clntSocket.getOutputStream());
-			out.writeUTF("Thank you for connecting to " + clntSocket.getLocalSocketAddress() + "\nwait for commands!");
+			
+			// Send the random map to each client
+			out.writeUTF(mapFileName);
 			while (true) {
 				state.posX = Integer.parseInt(in.readUTF());
 				state.posY = Integer.parseInt(in.readUTF());

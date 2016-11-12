@@ -2,6 +2,7 @@ package server;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Random;
 import java.io.IOException;
  
 public class Server implements Runnable{
@@ -11,8 +12,13 @@ public class Server implements Runnable{
     protected Thread       movingThread= null;
     protected int numberOfPlayers = 0;
  
+	private static final int MAP_NUMBER = 2;
+	private static final String[] MAP_FILES = {"map1.txt", "map2.txt"};
+	private String mapFileName;
+	
     public Server(int port){
         this.serverPortVal = port;
+        mapFileName = MAP_FILES[new Random(System.nanoTime()).nextInt(MAP_NUMBER)];
     }
  
     public void run(){
@@ -33,8 +39,7 @@ public class Server implements Runnable{
                     "Client cannot be connected - Error", e);
             }
             new Thread(
-                new Worker(
-                    clntSocket, "This is a multithreaded Server",numberOfPlayers)
+                new Worker(clntSocket, "This is a multithreaded Server", numberOfPlayers, mapFileName)
             ).start();
             numberOfPlayers++;
         }

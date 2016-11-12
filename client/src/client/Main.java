@@ -39,7 +39,6 @@ public class Main extends Application{
         root = new Pane();
         Rectangle rectangle = new Rectangle(600,600,Color.LIGHTGREY);
 		root.getChildren().add(rectangle);
-		readMap("map1.txt");
         root.getChildren().add(playerRectangle);
         
         Scene scene = new Scene(root, 1280, 720);
@@ -130,11 +129,12 @@ public class Main extends Application{
         primaryStage.show();
     }
 	
-	public void readMap(String fileName){
+	public static void readMap(String fileName){
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
-			int nr = Integer.parseInt(br.readLine());
 			
+			Vector<Rectangle> mapRectangles = new Vector<>();
+			int nr = Integer.parseInt(br.readLine());
 			for (int i = 0; i < nr; i++) {
 				String[] line = br.readLine().split(" ");
 				int x,y,width,height;
@@ -145,23 +145,20 @@ public class Main extends Application{
 				Rectangle r = new Rectangle(width, height, Color.MAGENTA);
 				r.setX(x);
 				r.setY(y);
-				root.getChildren().add(r);
-				addToMap(x,y,width,height);
-
+				mapRectangles.add(r);
+				addToCollisionMap(x,y,width,height);
 			}
+			root.getChildren().addAll(1, mapRectangles);
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	private void addToMap(int x, int y, int width, int height) {
+	private static void addToCollisionMap(int x, int y, int width, int height) {
 		for (int i = x+1; i < x+ width-1; i++) {
 			for (int j = y+1; j < y+height-1; j++) {
 				collisionMap[i][j] = 1 ;

@@ -34,7 +34,14 @@ public class Connect implements Runnable {
 			InputStream inFromServer = client.getInputStream();
 			DataInputStream in = new DataInputStream(inFromServer);
 
-			System.out.println("Server says " + in.readUTF());
+			String mapFileName = in.readUTF();
+			System.out.println("Server says " + mapFileName);
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Main.readMap(mapFileName);
+				}
+			});
 			while (true) {
 
 				if (stop)
