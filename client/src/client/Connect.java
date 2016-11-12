@@ -49,6 +49,7 @@ public class Connect implements Runnable {
 
 				// try a move
 				othersState.removeAllElements();
+				Main.move();
 				synchronized (Lock) {
 					out.writeUTF("" + state.posX);
 					out.writeUTF("" + state.posY);

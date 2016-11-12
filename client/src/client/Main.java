@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.Vector;
 
 import javafx.application.Application;
@@ -16,13 +17,22 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
-public class Main extends Application{
-	public static Rectangle playerRectangle;
+public class Main extends Application {
+	
 	public static final int playerSpeed = 5;
 	public static final int playerSize = 25;
+	private double sceneWidth = 600;
+	private double sceneHeight = 600;
+	
+	public static Rectangle playerRectangle;
 	public static Vector<Rectangle> players = new Vector<Rectangle>();
+	
 	public static Pane root;
+	
 	public static int [][] collisionMap = new int[800][800];
+	
+	private static KeyCode moveDirection = KeyCode.RIGHT;
+	private static final EnumSet<KeyCode> validMoves = EnumSet.of(KeyCode.RIGHT, KeyCode.LEFT, KeyCode.UP, KeyCode.DOWN);
 	
 	@Override
 	public void start(Stage primaryStage) {
@@ -41,93 +51,98 @@ public class Main extends Application{
 		root.getChildren().add(rectangle);
         root.getChildren().add(playerRectangle);
         
-        Scene scene = new Scene(root, 1280, 720);
+        Scene scene = new Scene(root, sceneWidth, sceneHeight);
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-
 			@Override
 			public void handle(KeyEvent event) {
-				switch (event.getCode()) {
-                   case UP:    
-                	   if (checkCollisions(KeyCode.UP))
-                		   Connect.state.posY -= playerSpeed; 
-                	   break;
-                   case DOWN:  
-                	   if (checkCollisions(KeyCode.DOWN))
-                		   Connect.state.posY += playerSpeed; 
-                	   break;
-                   case LEFT:  
-                	   if (checkCollisions(KeyCode.LEFT))
-                		   Connect.state.posX -= playerSpeed;
-                	   break;
-                   case RIGHT: 
-                	   if (checkCollisions(KeyCode.RIGHT))
-                		   Connect.state.posX += playerSpeed;
-                	   break;
-                   case ESCAPE:
-                   		System.exit(0);
-                   break;
-				default:
-					break;
-				}
-			}
-
-			private boolean checkCollisions(KeyCode direction) {
-				switch (direction) {
-				case UP:
-					int x = Connect.state.posX;
-					int y = Connect.state.posY - playerSpeed;
-					if( x< 0 || x >= 600 || y<0 || y>= 600)
-						return false;
-					if (collisionMap[x][y] == 1)
-						return false;
-					
-					if (collisionMap[x + playerSize][y] == 1)
-						return false;
-					break;
-				case DOWN:
-					 x = Connect.state.posX ;
-					 y = Connect.state.posY+ playerSpeed;
-					 System.out.println(x + " ****************" + y);
-					 if( x< 0 || x >= 600 || y<0 || y>= 600 || y+playerSize >600)
-							return false;
-					if (collisionMap[x+ playerSize][y+ playerSize] == 1)
-						return false;
-					
-					if (collisionMap[x ][y+ playerSize] == 1)
-						return false;
-					break;
-					
-				case LEFT:
-					 x = Connect.state.posX - playerSpeed;
-					 y = Connect.state.posY ;
-					 if( x< 0 || x >= 600 || y<0 || y>= 600)
-							return false;
-					if (collisionMap[x][y] == 1)
-						return false;
-					
-					if (collisionMap[x ][y+ playerSize] == 1)
-						return false;
-					break;
-				case RIGHT:
-					 x = Connect.state.posX  + playerSpeed;
-					 y = Connect.state.posY;
-					 if( x< 0 || x >= 600 || y<0 || y>= 600 || x+playerSize >=601)
-							return false;
-					if (collisionMap[x+ playerSize][y] == 1)
-						return false;
-					
-					if (collisionMap[x + playerSize][y + playerSize] == 1)
-						return false;
-					break;	
-				default:
-					break;
-				}
-				return true;
-			}
-		});
+				// Only accept valid moves
+				KeyCode key = event.getCode();
+				if (validMoves.contains(key))
+					moveDirection = key;
+				
+				if (key == KeyCode.ESCAPE)
+					System.exit(0);
+			}});
         primaryStage.setScene(scene);
         primaryStage.show();
     }
+
+	public static void move() {
+		switch (moveDirection ) {
+           case UP:    
+        	   if (checkCollisions(KeyCode.UP))
+        		   Connect.state.posY -= playerSpeed; 
+        	   break;
+           case DOWN:  
+        	   if (checkCollisions(KeyCode.DOWN))
+        		   Connect.state.posY += playerSpeed; 
+        	   break;
+           case LEFT:  
+        	   if (checkCollisions(KeyCode.LEFT))
+        		   Connect.state.posX -= playerSpeed;
+        	   break;
+           case RIGHT: 
+        	   if (checkCollisions(KeyCode.RIGHT))
+        		   Connect.state.posX += playerSpeed;
+        	   break;
+		default:
+			break;
+		}
+	
+	}
+	public static boolean checkCollisions(KeyCode direction) {
+		switch (direction) {
+		case UP:
+			int x = Connect.state.posX;
+			int y = Connect.state.posY - playerSpeed;
+			if( x< 0 || x >= 600 || y<0 || y>= 600)
+				return false;
+			if (collisionMap[x][y] == 1)
+				return false;
+			
+			if (collisionMap[x + playerSize][y] == 1)
+				return false;
+			break;
+		case DOWN:
+			 x = Connect.state.posX ;
+			 y = Connect.state.posY+ playerSpeed;
+			 System.out.println(x + " ****************" + y);
+			 if( x< 0 || x >= 600 || y<0 || y>= 600 || y+playerSize >600)
+					return false;
+			if (collisionMap[x+ playerSize][y+ playerSize] == 1)
+				return false;
+			
+			if (collisionMap[x ][y+ playerSize] == 1)
+				return false;
+			break;
+			
+		case LEFT:
+			 x = Connect.state.posX - playerSpeed;
+			 y = Connect.state.posY ;
+			 if( x< 0 || x >= 600 || y<0 || y>= 600)
+					return false;
+			if (collisionMap[x][y] == 1)
+				return false;
+			
+			if (collisionMap[x ][y+ playerSize] == 1)
+				return false;
+			break;
+		case RIGHT:
+			 x = Connect.state.posX  + playerSpeed;
+			 y = Connect.state.posY;
+			 if( x< 0 || x >= 600 || y<0 || y>= 600 || x+playerSize >=601)
+					return false;
+			if (collisionMap[x+ playerSize][y] == 1)
+				return false;
+			
+			if (collisionMap[x + playerSize][y + playerSize] == 1)
+				return false;
+			break;	
+		default:
+			break;
+		}
+		return true;
+	}
 	
 	public static void readMap(String fileName){
 		try {
