@@ -21,15 +21,19 @@ public class Main extends Application {
 	
 	public static final int playerSpeed = 5;
 	public static final int playerSize = 25;
-	private double sceneWidth = 600;
-	private double sceneHeight = 600;
+	
+	// Small to make testing easier for now
+	private static final int sceneWidth = 600;
+	private static final int sceneHeight = 600;
+	
+	private static final int mapSize = 600;
 	
 	public static Rectangle playerRectangle;
 	public static Vector<Rectangle> players = new Vector<Rectangle>();
 	
 	public static Pane root;
 	
-	public static int [][] collisionMap = new int[800][800];
+	public static int [][] collisionMap = new int[mapSize + playerSize][mapSize + playerSize];
 	
 	private static KeyCode moveDirection = KeyCode.RIGHT;
 	private static final EnumSet<KeyCode> validMoves = EnumSet.of(KeyCode.RIGHT, KeyCode.LEFT, KeyCode.UP, KeyCode.DOWN);
@@ -47,7 +51,7 @@ public class Main extends Application {
 
         
         root = new Pane();
-        Rectangle rectangle = new Rectangle(600,600,Color.LIGHTGREY);
+        Rectangle rectangle = new Rectangle(mapSize,mapSize,Color.LIGHTGREY);
 		root.getChildren().add(rectangle);
         root.getChildren().add(playerRectangle);
         
@@ -95,7 +99,7 @@ public class Main extends Application {
 		case UP:
 			int x = Connect.state.posX;
 			int y = Connect.state.posY - playerSpeed;
-			if( x< 0 || x >= 600 || y<0 || y>= 600)
+			if( x< 0 || x >= mapSize || y<0 || y>= mapSize)
 				return false;
 			if (collisionMap[x][y] == 1)
 				return false;
@@ -107,31 +111,31 @@ public class Main extends Application {
 			 x = Connect.state.posX ;
 			 y = Connect.state.posY+ playerSpeed;
 			 System.out.println(x + " ****************" + y);
-			 if( x< 0 || x >= 600 || y<0 || y>= 600 || y+playerSize >600)
+			 if(x < 0 || x >= mapSize || y < 0 || y >= mapSize || y + playerSize > mapSize)
 					return false;
-			if (collisionMap[x+ playerSize][y+ playerSize] == 1)
+			if (collisionMap[x + playerSize][y + playerSize] == 1)
 				return false;
 			
-			if (collisionMap[x ][y+ playerSize] == 1)
+			if (collisionMap[x][y + playerSize] == 1)
 				return false;
 			break;
 			
 		case LEFT:
-			 x = Connect.state.posX - playerSpeed;
-			 y = Connect.state.posY ;
-			 if( x< 0 || x >= 600 || y<0 || y>= 600)
-					return false;
+			x = Connect.state.posX - playerSpeed;
+			y = Connect.state.posY ;
+			if (x < 0 || x >= mapSize || y<0 || y>= mapSize)
+				return false;
 			if (collisionMap[x][y] == 1)
 				return false;
 			
-			if (collisionMap[x ][y+ playerSize] == 1)
+			if (collisionMap[x][y + playerSize] == 1)
 				return false;
 			break;
 		case RIGHT:
-			 x = Connect.state.posX  + playerSpeed;
-			 y = Connect.state.posY;
-			 if( x< 0 || x >= 600 || y<0 || y>= 600 || x+playerSize >=601)
-					return false;
+			x = Connect.state.posX  + playerSpeed;
+			y = Connect.state.posY;
+			if (x < 0 || x >= mapSize || y < 0 || y >= mapSize || x + playerSize > mapSize)
+				return false;
 			if (collisionMap[x+ playerSize][y] == 1)
 				return false;
 			
