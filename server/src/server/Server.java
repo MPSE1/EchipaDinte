@@ -12,13 +12,14 @@ public class Server implements Runnable{
     protected Thread       movingThread= null;
     protected int numberOfPlayers = 0;
  
-	private static final int MAP_NUMBER = 2;
-	private static final String[] MAP_FILES = {"map1.txt", "map2.txt"};
+	private static final int MAP_NUMBER = 5;
+	private static final String[] MAP_FILES = {"map1.txt", "map2.txt", "map3.txt", "map4.txt", "map5.txt"};
 	private String mapFileName;
 	
     public Server(int port){
         this.serverPortVal = port;
         mapFileName = MAP_FILES[new Random(System.nanoTime()).nextInt(MAP_NUMBER)];
+    
     }
  
     public void run(){
