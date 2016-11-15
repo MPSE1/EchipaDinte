@@ -4,6 +4,7 @@ import java.net.*;
 import java.util.Vector;
 
 import javafx.application.Platform;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
 import java.io.*;
@@ -49,30 +50,36 @@ public class Connect implements Runnable {
 
 				// try a move
 				othersState.removeAllElements();
-				Main.move();
+				if(state.gameStart == 1)
+					Main.move();
 				synchronized (Lock) {
 					out.writeUTF("" + state.posX);
 					out.writeUTF("" + state.posY);
 					out.writeUTF("" + state.lifes);
 					out.writeUTF("" + state.doctor);
+					out.writeUTF("" + state.gameStart);
 				}
+				Thread.sleep(1);
 				synchronized (Lock) {
 
 					playerNumber = Integer.parseInt(in.readUTF());
+
 					numberOfPlayers = Integer.parseInt(in.readUTF());
 
 					for (int i = 0; i < numberOfPlayers; i++) {
-						System.out.println(othersState);
+						//System.out.println(othersState);
 						if (i == playerNumber) {
 							state.posX = Integer.parseInt(in.readUTF());
 							state.posY = Integer.parseInt(in.readUTF());
 							state.lifes = Integer.parseInt(in.readUTF());
 							state.doctor = Integer.parseInt(in.readUTF());
+							state.gameStart = Integer.parseInt(in.readUTF());
 							if (state.posX != null) {
+								System.out.println(state.posX + " " + state.posY);
 								Main.playerRectangle.setX(state.posX);
 								Main.playerRectangle.setY(state.posY);
 							}
-							othersState.add(new State(state.posX, state.posY, state.lifes, state.doctor));
+							othersState.add(new State(state.posX, state.posY, state.lifes, state.doctor, state.gameStart));
 							if (Main.players.size() <= i) {
 								while (Main.players.size() <= i) {
 									Rectangle rec = new Rectangle();
@@ -86,9 +93,47 @@ public class Connect implements Runnable {
 							Main.players.get(i).setHeight(Main.playerSize);
 							Main.players.get(i).setArcWidth(20);
 							Main.players.get(i).setArcHeight(20);
+							if(othersState.lastElement().doctor == 0){
+								Main.playerRectangle.setFill(Color.RED);
+								Main.players.get(i).setFill(Color.RED);
+							}
+							else{
+								Main.players.get(i).setFill(Color.BLACK);
+								Main.playerRectangle.setFill(Color.AQUA);
+							}
+							
 						} else {
-							othersState.add(new State(Integer.parseInt(in.readUTF()), Integer.parseInt(in.readUTF()),
-									Integer.parseInt(in.readUTF()), Integer.parseInt(in.readUTF())));
+							
+							String received;
+							int posX,posY,lifes,doctor,gameStart;
+							received = in.readUTF();
+							if(received.compareTo("null") != 0)
+								posX = Integer.parseInt(received);
+							else
+								posX = 0;
+							received = in.readUTF();
+							if(received.compareTo("null") != 0)	
+								posY = Integer.parseInt(received);
+							else
+								posY = 0;
+							received = in.readUTF();
+							if(received.compareTo("null") != 0)
+								lifes = Integer.parseInt(received);
+							else
+								lifes = 10;
+							received = in.readUTF();
+							if(received.compareTo("null") != 0)
+								doctor = Integer.parseInt(received);
+							else
+								doctor = 1;
+							received = in.readUTF();
+							if(received.compareTo("null") != 0)
+								gameStart = Integer.parseInt(received);
+							else
+								gameStart = 1;
+							//System.out.println("doctor :" + doctor);
+							othersState.add(new State(posX, posY, lifes, doctor, gameStart));
+							Thread.sleep(1);
 							if (Main.players.size() <= i) {
 								while (Main.players.size() <= i) {
 									Rectangle rec = new Rectangle();
@@ -98,7 +143,7 @@ public class Connect implements Runnable {
 											Main.root.getChildren().add(rec);
 										}
 									});
-									Thread.sleep(30);
+									Thread.sleep(70);
 									Main.players.add(rec);
 								}
 							}
@@ -108,14 +153,18 @@ public class Connect implements Runnable {
 							Main.players.get(i).setHeight(Main.playerSize);
 							Main.players.get(i).setArcWidth(20);
 							Main.players.get(i).setArcHeight(20);
+							if(othersState.lastElement().doctor == 0)
+								Main.players.get(i).setFill(Color.RED);
+							else
+								Main.players.get(i).setFill(Color.BLACK);
 						}
 
 					}
 
 				}
 				// apply move according to server response
-				System.out.println(othersState);
-				Thread.sleep(25);
+				//System.out.println(othersState);
+				Thread.sleep(50);
 			}
 
 			client.close();

@@ -9,12 +9,14 @@ public class State {
 	
 	Integer doctor = 0;//pac-man or ghost
 	
+	Integer gameStart = 0;
 	
-	public State(int parseInt, int parseInt2, int parseInt3, int parseInt4) {
+	public State(int parseInt, int parseInt2, int parseInt3, int parseInt4, int gameStart2) {
 		posX = parseInt;
 		posY = parseInt2;
 		lifes = parseInt3;
 		doctor = parseInt4;
+		gameStart = gameStart2;
 	}
 
 
