@@ -10,6 +10,8 @@ import java.util.Vector;
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Pane;
@@ -21,6 +23,8 @@ public class Main extends Application {
 
 	public static final int playerSpeed = 15;
 	public static final int playerSize = 25;
+	public static final int startingLives = 1;
+	public static final int minPlayers = 4;
 
 	// Small to make testing easier for now
 	private static final int sceneWidth = 600;
@@ -44,7 +48,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		fPrimaryStage = primaryStage;
-		fPrimaryStage.setTitle("Lives: " + 1);
+		fPrimaryStage.setTitle("Lives: " + startingLives);
 		playerRectangle.setX(0);
 		playerRectangle.setY(0);
 
@@ -172,5 +176,14 @@ public class Main extends Application {
 		Connect connection = new Connect();
 		new Thread(connection).start();
 		launch(args);
+	}
+
+	public static void endGame() {
+		Alert alert = new Alert(AlertType.INFORMATION);
+		alert.setTitle("Game has ended");
+		alert.setHeaderText(null);
+		alert.setContentText("Catalin has won!");
+		alert.showAndWait();
+		System.exit(0);
 	}
 }

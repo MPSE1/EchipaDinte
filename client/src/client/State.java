@@ -1,11 +1,10 @@
 package client;
 
 public class State {
-
 	Integer posX = 0;
 	Integer posY = 0;
 	
-	Integer lifes = 1;
+	Integer lifes = Main.startingLives;
 	
 	Integer doctor = 0;//pac-man or ghost
 	
@@ -23,7 +22,7 @@ public class State {
 	public State() {
 		posX = 0;
 		posY = 0;
-		lifes = 1;
+		lifes = Main.startingLives;
 		doctor = 0;//pac-man or ghost
 	}
 

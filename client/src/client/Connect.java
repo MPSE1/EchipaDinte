@@ -1,15 +1,26 @@
 package client;
 
-import java.net.*;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.Socket;
 import java.util.Random;
 import java.util.Vector;
 
+import javax.net.ssl.SSLEngineResult.Status;
+
 import javafx.application.Platform;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-
-import java.io.*;
+import javafx.scene.text.Text;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class Connect implements Runnable {
 
@@ -163,6 +174,8 @@ public class Connect implements Runnable {
 					}
 					if (state.doctor != 0)
 						checkBadGuyCollision();
+					if (othersState.size() >= Main.minPlayers)
+						checkGameEnded();
 				}
 				// apply move according to server response
 				// System.out.println(othersState);
@@ -175,6 +188,22 @@ public class Connect implements Runnable {
 			stop = true;
 		}
 
+	}
+
+	private void checkGameEnded() {
+		int alive = 0;
+		for (State s : othersState)
+			alive += s.lifes > 0 ? 1 : 0;
+		if (alive == 1) {
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Main.endGame();
+				}});
+			try {
+				Thread.currentThread().join();
+			} catch (InterruptedException e) {}
+		}
 	}
 
 	private void move() {
