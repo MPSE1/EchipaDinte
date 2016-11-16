@@ -19,7 +19,7 @@ import javafx.stage.Stage;
 
 public class Main extends Application {
 
-	public static final int playerSpeed = 5;
+	public static final int playerSpeed = 15;
 	public static final int playerSize = 25;
 
 	// Small to make testing easier for now
@@ -35,13 +35,16 @@ public class Main extends Application {
 
 	public static int[][] collisionMap = new int[mapSize + playerSize][mapSize + playerSize];
 
-	private static KeyCode moveDirection = KeyCode.RIGHT;
-	private static final EnumSet<KeyCode> validMoves = EnumSet.of(KeyCode.RIGHT, KeyCode.LEFT, KeyCode.UP,
+	public static KeyCode moveDirection = KeyCode.A;
+	public static final EnumSet<KeyCode> validMoves = EnumSet.of(KeyCode.RIGHT, KeyCode.LEFT, KeyCode.UP,
 			KeyCode.DOWN);
+	
+	public static Stage fPrimaryStage;
 
 	@Override
 	public void start(Stage primaryStage) {
-		primaryStage.setTitle("Game");
+		fPrimaryStage = primaryStage;
+		fPrimaryStage.setTitle("Lives: " + 1);
 		playerRectangle.setX(0);
 		playerRectangle.setY(0);
 
@@ -73,30 +76,6 @@ public class Main extends Application {
 		primaryStage.show();
 	}
 
-	public static void move() {
-		switch (moveDirection) {
-		case UP:
-			if (checkCollisions(KeyCode.UP))
-				Connect.state.posY -= playerSpeed;
-			break;
-		case DOWN:
-			if (checkCollisions(KeyCode.DOWN))
-				Connect.state.posY += playerSpeed;
-			break;
-		case LEFT:
-			if (checkCollisions(KeyCode.LEFT))
-				Connect.state.posX -= playerSpeed;
-			break;
-		case RIGHT:
-			if (checkCollisions(KeyCode.RIGHT))
-				Connect.state.posX += playerSpeed;
-			break;
-		default:
-			break;
-		}
-
-	}
-
 	public static boolean checkCollisions(KeyCode direction) {
 		switch (direction) {
 		case UP:
@@ -113,7 +92,6 @@ public class Main extends Application {
 		case DOWN:
 			x = Connect.state.posX;
 			y = Connect.state.posY + playerSpeed;
-			// System.out.println(x + " ****************" + y);
 			if (x < 0 || x >= mapSize || y < 0 || y >= mapSize || y + playerSize > mapSize)
 				return false;
 			if (collisionMap[x + playerSize][y + playerSize] == 1)

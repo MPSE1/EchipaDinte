@@ -69,10 +69,10 @@ public class Worker implements Runnable {
 						if (number == 3) {
 							out.writeUTF("" + 0);
 							out.writeUTF("" + 0);
-						} else if (number == 1) {
+						} else if (number == 2) {
 							out.writeUTF("" + 575);
 							out.writeUTF("" + 0);
-						} else if (number == 2) {
+						} else if (number == 1) {
 							out.writeUTF("" + 575);
 							out.writeUTF("" + 575);
 						} else if (number == 0) {

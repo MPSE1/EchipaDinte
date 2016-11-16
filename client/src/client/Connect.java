@@ -4,6 +4,7 @@ import java.net.*;
 import java.util.Vector;
 
 import javafx.application.Platform;
+import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -48,10 +49,10 @@ public class Connect implements Runnable {
 				if (stop)
 					break;
 
-				// try a move
 				othersState.removeAllElements();
-				if(state.gameStart == 1)
-					Main.move();
+				// try a move
+				if (state.gameStart == 1)
+					move();
 				synchronized (Lock) {
 					out.writeUTF("" + state.posX);
 					out.writeUTF("" + state.posY);
@@ -67,7 +68,7 @@ public class Connect implements Runnable {
 					numberOfPlayers = Integer.parseInt(in.readUTF());
 
 					for (int i = 0; i < numberOfPlayers; i++) {
-						//System.out.println(othersState);
+						// System.out.println(othersState);
 						if (i == playerNumber) {
 							state.posX = Integer.parseInt(in.readUTF());
 							state.posY = Integer.parseInt(in.readUTF());
@@ -75,7 +76,7 @@ public class Connect implements Runnable {
 							state.doctor = Integer.parseInt(in.readUTF());
 							state.gameStart = Integer.parseInt(in.readUTF());
 							if (state.posX != null) {
-								System.out.println(state.posX + " " + state.posY);
+//								System.out.println(state.posX + " " + state.posY);
 								Main.playerRectangle.setX(state.posX);
 								Main.playerRectangle.setY(state.posY);
 							}
@@ -93,45 +94,44 @@ public class Connect implements Runnable {
 							Main.players.get(i).setHeight(Main.playerSize);
 							Main.players.get(i).setArcWidth(20);
 							Main.players.get(i).setArcHeight(20);
-							if(othersState.lastElement().doctor == 0){
+							if (state.doctor == 0) {
 								Main.playerRectangle.setFill(Color.RED);
 								Main.players.get(i).setFill(Color.RED);
-							}
-							else{
+							} else {
+								Thread.sleep(5);
 								Main.players.get(i).setFill(Color.BLACK);
 								Main.playerRectangle.setFill(Color.AQUA);
 							}
-							
 						} else {
-							
+
 							String received;
-							int posX,posY,lifes,doctor,gameStart;
+							int posX, posY, lifes, doctor, gameStart;
 							received = in.readUTF();
-							if(received.compareTo("null") != 0)
+							if (received.compareTo("null") != 0)
 								posX = Integer.parseInt(received);
 							else
 								posX = 0;
 							received = in.readUTF();
-							if(received.compareTo("null") != 0)	
+							if (received.compareTo("null") != 0)
 								posY = Integer.parseInt(received);
 							else
 								posY = 0;
 							received = in.readUTF();
-							if(received.compareTo("null") != 0)
+							if (received.compareTo("null") != 0)
 								lifes = Integer.parseInt(received);
 							else
 								lifes = 10;
 							received = in.readUTF();
-							if(received.compareTo("null") != 0)
+							if (received.compareTo("null") != 0)
 								doctor = Integer.parseInt(received);
 							else
 								doctor = 1;
 							received = in.readUTF();
-							if(received.compareTo("null") != 0)
+							if (received.compareTo("null") != 0)
 								gameStart = Integer.parseInt(received);
 							else
 								gameStart = 1;
-							//System.out.println("doctor :" + doctor);
+							// System.out.println("doctor :" + doctor);
 							othersState.add(new State(posX, posY, lifes, doctor, gameStart));
 							Thread.sleep(1);
 							if (Main.players.size() <= i) {
@@ -153,17 +153,18 @@ public class Connect implements Runnable {
 							Main.players.get(i).setHeight(Main.playerSize);
 							Main.players.get(i).setArcWidth(20);
 							Main.players.get(i).setArcHeight(20);
-							if(othersState.lastElement().doctor == 0)
+							if (othersState.lastElement().doctor == 0)
 								Main.players.get(i).setFill(Color.RED);
 							else
 								Main.players.get(i).setFill(Color.BLACK);
 						}
 
 					}
-
+					if (state.doctor != 0)
+						checkBadGuyCollision();
 				}
 				// apply move according to server response
-				//System.out.println(othersState);
+				// System.out.println(othersState);
 				Thread.sleep(50);
 			}
 
@@ -175,4 +176,63 @@ public class Connect implements Runnable {
 
 	}
 
+	private void move() {
+		switch (Main.moveDirection) {
+		case UP:
+			if (Main.checkCollisions(KeyCode.UP))
+				state.posY -= Main.playerSpeed;
+			break;
+		case DOWN:
+			if (Main.checkCollisions(KeyCode.DOWN))
+				state.posY += Main.playerSpeed;
+			break;
+		case LEFT:
+			if (Main.checkCollisions(KeyCode.LEFT))
+				state.posX -= Main.playerSpeed;
+			break;
+		case RIGHT:
+			if (Main.checkCollisions(KeyCode.RIGHT))
+				state.posX += Main.playerSpeed;
+			break;
+		default:
+			break;
+		}
+	}
+	
+	private void checkBadGuyCollision() {
+		Rectangle playerRectangle = Main.playerRectangle;
+		for (State s : othersState) {
+			if (s.doctor == 0) {
+				int playerSize = Main.playerSize;
+				
+				// Get bad guy center position
+				int badX = s.posX + playerSize/2;
+				int badY = s.posY + playerSize/2;
+				
+				// Get our center position
+				int meX = state.posX + playerSize/2;
+				int meY = state.posY + playerSize/2;
+				
+				// Check collision
+				if (distance(badX, badY, meX, meY) < playerSize) { // I'm dead
+					System.out.println("Player:" + state.posX + ", " + state.posY + "found collision");
+					state.lifes--;
+					playerRectangle.setX(0);
+					playerRectangle.setY(0);
+					state.posX = 5;
+					state.posY = 5;
+					Platform.runLater(new Runnable() {
+						@Override
+						public void run() {
+							Main.fPrimaryStage.setTitle("Lives: " + state.lifes);
+						}
+					});
+				}
+			}
+		}
+	}
+	
+	public double distance(int x1, int y1, int x2, int y2) {
+	    return Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+	}
 }
