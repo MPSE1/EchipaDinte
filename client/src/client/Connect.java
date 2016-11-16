@@ -1,6 +1,7 @@
 package client;
 
 import java.net.*;
+import java.util.Random;
 import java.util.Vector;
 
 import javafx.application.Platform;
@@ -200,7 +201,6 @@ public class Connect implements Runnable {
 	}
 	
 	private void checkBadGuyCollision() {
-		Rectangle playerRectangle = Main.playerRectangle;
 		for (State s : othersState) {
 			if (s.doctor == 0) {
 				int playerSize = Main.playerSize;
@@ -217,10 +217,7 @@ public class Connect implements Runnable {
 				if (distance(badX, badY, meX, meY) < playerSize) { // I'm dead
 					System.out.println("Player:" + state.posX + ", " + state.posY + "found collision");
 					state.lifes--;
-					playerRectangle.setX(0);
-					playerRectangle.setY(0);
-					state.posX = 5;
-					state.posY = 5;
+					respawnInRandomCorner();
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
@@ -232,6 +229,35 @@ public class Connect implements Runnable {
 		}
 	}
 	
+	private void respawnInRandomCorner() {
+		int posX, posY;
+		int random = new Random(System.nanoTime()).nextInt(4);
+		switch (random) {
+		case 0:
+			posX = 0;
+			posY = 0;
+			break;
+		case 1:
+			posX = 0;
+			posY = 575;
+			break;
+		case 2:
+			posX = 575;
+			posY = 0;
+			break;
+		case 3:
+			posX = 575;
+			posY = 575;
+			break;
+		default:
+			return;
+		}
+		Main.playerRectangle.setX(posX);
+		Main.playerRectangle.setY(posY);
+		state.posX = posX;
+		state.posY = posY;
+	}
+
 	public double distance(int x1, int y1, int x2, int y2) {
 	    return Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
 	}
