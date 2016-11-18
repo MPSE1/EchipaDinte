@@ -1,16 +1,15 @@
 package client;
 
 public class State {
+	
 	Integer posX = 0;
 	Integer posY = 0;
-	
 	Integer lifes = Main.startingLives;
-	
 	Integer doctor = 0;//pac-man or ghost
-	
 	Integer gameStart = 0;
 	
 	public State(int parseInt, int parseInt2, int parseInt3, int parseInt4, int gameStart2) {
+		
 		posX = parseInt;
 		posY = parseInt2;
 		lifes = parseInt3;
@@ -20,10 +19,11 @@ public class State {
 
 
 	public State() {
+		
 		posX = 0;
 		posY = 0;
 		lifes = Main.startingLives;
-		doctor = 0;//pac-man or ghost
+		doctor = 0; //pac-man or ghost
 	}
 
 

@@ -8,6 +8,7 @@ import java.util.Vector;
 
 
 public class Worker implements Runnable {
+	
 	protected Socket clntSocket = null;
 	protected String txtFrmSrvr = null;
 	protected State state;
@@ -60,10 +61,11 @@ public class Worker implements Runnable {
 
 				out.writeUTF("" + number);
 				out.writeUTF("" + allStates.size());
-				// System.out.println(allStates);
+				
 				for (int i = 0; i < allStates.size(); i++) {
 					State sta = allStates.get(i);
-					// System.out.println("Sent " + sta);
+				
+					
 					if (allStates.size() != minPlayers) {
 						first = false;
 						if (number == 3) {
@@ -89,7 +91,7 @@ public class Worker implements Runnable {
 					}
 					out.writeUTF("" + sta.lifes);
 					synchronized (lock) {
-						//System.out.println(number + " " + nebun);
+						
 						if (i == nebun) {
 							out.writeUTF("" + 0);
 						} else
@@ -105,8 +107,7 @@ public class Worker implements Runnable {
 									nebun = rand.nextInt(minPlayers);
 								System.out.println(nebun);
 							}
-						// System.out.println((System.currentTimeMillis() -
-						// start) / 60.0f / 1000.0f);
+						
 						if ((System.currentTimeMillis() - startNebun) / 60.0f / 1000.0f > changeNebun && number == 0)
 							synchronized (lock) {
 								startNebun = System.currentTimeMillis();
@@ -117,7 +118,7 @@ public class Worker implements Runnable {
 							out.writeUTF("" + 0);
 						else
 							out.writeUTF("" + 1);
-						// System.out.println(allStates.size());
+						
 					} else {
 						out.writeUTF("" + sta.gameStart);
 					}
@@ -125,8 +126,7 @@ public class Worker implements Runnable {
 				}
 
 				Thread.sleep(1);
-				// System.out.println("for client " + number + " state is " +
-				// state);
+				
 			}
 
 		} catch (Exception e) {

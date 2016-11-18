@@ -6,10 +6,11 @@ import java.util.Random;
 import java.io.IOException;
  
 public class Server implements Runnable{
-    protected int          serverPortVal   = 8080;
+	
+    protected int serverPortVal   = 8080;
     protected ServerSocket serverSocketVal = null;
-    protected boolean      hasStopped    = false;
-    protected Thread       movingThread= null;
+    protected boolean hasStopped    = false;
+    protected Thread movingThread= null;
     protected int numberOfPlayers = 0;
  
 	private static final int MAP_NUMBER = 5;

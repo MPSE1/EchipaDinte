@@ -40,13 +40,13 @@ public class Main extends Application {
 	public static int[][] collisionMap = new int[mapSize + playerSize][mapSize + playerSize];
 
 	public static KeyCode moveDirection = KeyCode.A;
-	public static final EnumSet<KeyCode> validMoves = EnumSet.of(KeyCode.RIGHT, KeyCode.LEFT, KeyCode.UP,
-			KeyCode.DOWN);
-	
+	public static final EnumSet<KeyCode> validMoves = EnumSet.of(KeyCode.RIGHT, KeyCode.LEFT, KeyCode.UP, KeyCode.DOWN);
+
 	public static Stage fPrimaryStage;
 
 	@Override
 	public void start(Stage primaryStage) {
+		
 		fPrimaryStage = primaryStage;
 		fPrimaryStage.setTitle("Lives: " + startingLives);
 		playerRectangle.setX(0);
@@ -81,7 +81,9 @@ public class Main extends Application {
 	}
 
 	public static boolean checkCollisions(KeyCode direction) {
+
 		switch (direction) {
+
 		case UP:
 			int x = Connect.state.posX;
 			int y = Connect.state.posY - playerSpeed;
@@ -93,6 +95,7 @@ public class Main extends Application {
 			if (collisionMap[x + playerSize][y] == 1)
 				return false;
 			break;
+
 		case DOWN:
 			x = Connect.state.posX;
 			y = Connect.state.posY + playerSpeed;
@@ -116,6 +119,7 @@ public class Main extends Application {
 			if (collisionMap[x][y + playerSize] == 1)
 				return false;
 			break;
+
 		case RIGHT:
 			x = Connect.state.posX + playerSpeed;
 			y = Connect.state.posY;
@@ -127,6 +131,7 @@ public class Main extends Application {
 			if (collisionMap[x + playerSize][y + playerSize] == 1)
 				return false;
 			break;
+
 		default:
 			break;
 		}
@@ -134,10 +139,10 @@ public class Main extends Application {
 	}
 
 	public static void readMap(String fileName) {
+
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(fileName));
 
-			Vector<Rectangle> mapRectangles = new Vector<>();
 			int nr = Integer.parseInt(br.readLine());
 			for (int i = 0; i < nr; i++) {
 				String[] line = br.readLine().split(" ");
@@ -149,10 +154,10 @@ public class Main extends Application {
 				Rectangle r = new Rectangle(width, height, Color.MAGENTA);
 				r.setX(x);
 				r.setY(y);
-				mapRectangles.add(r);
 				addToCollisionMap(x, y, width, height);
+				root.getChildren().add(r);
 			}
-			root.getChildren().addAll(1, mapRectangles);
+			br.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (NumberFormatException e) {
@@ -163,6 +168,7 @@ public class Main extends Application {
 	}
 
 	private static void addToCollisionMap(int x, int y, int width, int height) {
+
 		for (int i = x + 1; i < x + width - 1; i++) {
 			for (int j = y + 1; j < y + height - 1; j++) {
 				collisionMap[i][j] = 1;
