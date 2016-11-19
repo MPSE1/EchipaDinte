@@ -191,7 +191,6 @@ public class Main extends Application {
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Game has ended");
 		alert.setHeaderText(null);
-		playerIndex += 1;
 		alert.setContentText("Player " + playerIndex + " has won!");
 		alert.showAndWait();
 		System.exit(0);

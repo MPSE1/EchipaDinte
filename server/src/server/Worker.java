@@ -13,7 +13,7 @@ public class Worker implements Runnable {
 	protected State state;
 	protected int number = -1;
 	protected int minPlayers = 4;
-	protected float gameTime = 5.0f;
+	protected float gameTime = 1.0f;
 	public static Vector<State> allStates = new Vector<State>();
 	public static Object lock = new Object();
 	public static long start;
@@ -119,7 +119,7 @@ public class Worker implements Runnable {
 								System.out.println(nebun);
 							}
 						if ((System.currentTimeMillis() - start) / 60.0f / 1000.0f > gameTime) {
-							out.writeUTF("" + 0);
+							out.writeUTF("" + 2);
 						}	
 						else {
 							out.writeUTF("" + 1);

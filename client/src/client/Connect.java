@@ -57,6 +57,11 @@ public class Connect implements Runnable {
 				// try a move
 				if (state.gameStart == 1)
 					move();
+				
+				if (state.gameStart == 2) {
+					gameEnd();
+				    break;
+				}
 				synchronized (Lock) {
 					out.writeUTF("" + state.posX);
 					out.writeUTF("" + state.posY);
@@ -140,6 +145,7 @@ public class Connect implements Runnable {
 								gameStart = Integer.parseInt(received);
 
 							} else {
+								
 								gameStart = 1;
 							}
 
@@ -188,7 +194,7 @@ public class Connect implements Runnable {
 		}
 
 	}
-
+	
 	static int aliveIndex = -1;
 
 	private void checkGameEnded() {
@@ -207,7 +213,7 @@ public class Connect implements Runnable {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					Main.endGame(aliveIndex);
+					Main.endGame(Connect.aliveIndex + 1);
 				}
 			});
 			try {
@@ -217,6 +223,26 @@ public class Connect implements Runnable {
 		}
 	}
 
+	
+	private void gameEnd() {
+
+	int maxLives = -1;
+	
+	for (int i = 0; i < othersState.size(); i++) {
+		if ( maxLives < othersState.get(i).lifes) {
+			maxLives = othersState.get(i).lifes;
+			Connect.aliveIndex = i;
+		}
+	}		
+	Platform.runLater(new Runnable() {
+		@Override
+		public void run() {
+				Main.endGame(Connect.aliveIndex + 1);
+
+		}});
+	}
+
+	
 	private void move() {
 		
 		switch (Main.moveDirection) {
@@ -328,7 +354,7 @@ public class Connect implements Runnable {
 		state.posX = posX;
 		state.posY = posY;
 	}
-
+	
 	public double distance(int x1, int y1, int x2, int y2) {
 
 		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
