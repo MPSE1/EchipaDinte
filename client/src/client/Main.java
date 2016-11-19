@@ -186,11 +186,12 @@ public class Main extends Application {
 		launch(args);
 	}
 
-	public static void endGame(String playerIndex) {
+	public static void endGame(Integer playerIndex) {
 		
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Game has ended");
 		alert.setHeaderText(null);
+		playerIndex += 1;
 		alert.setContentText("Player " + playerIndex + " has won!");
 		alert.showAndWait();
 		System.exit(0);

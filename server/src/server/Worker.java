@@ -113,6 +113,9 @@ public class Worker implements Runnable {
 							synchronized (lock) {
 								startNebun = System.currentTimeMillis();
 								nebun = rand.nextInt(minPlayers);
+								while (allStates.get(nebun).posX == 1000) {
+									nebun = rand.nextInt(minPlayers);
+								}
 								System.out.println(nebun);
 							}
 						if ((System.currentTimeMillis() - start) / 60.0f / 1000.0f > gameTime) {

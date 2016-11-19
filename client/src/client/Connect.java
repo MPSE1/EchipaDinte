@@ -207,7 +207,7 @@ public class Connect implements Runnable {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					Main.endGame(Integer.toString(aliveIndex));
+					Main.endGame(aliveIndex);
 				}
 			});
 			try {
@@ -264,7 +264,12 @@ public class Connect implements Runnable {
 				if (distance(badX, badY, meX, meY) < playerSize) { // I'm dead
 					System.out.println("Player:" + state.posX + ", " + state.posY + " has found collision");
 					state.lifes--;
-					respawnInRandomCorner();
+					if ( state.lifes > 0) {
+						respawnInRandomCorner();
+					}
+					else {
+						eliminate();
+					}
 
 					Platform.runLater(new Runnable() {
 						@Override
@@ -275,6 +280,16 @@ public class Connect implements Runnable {
 				}
 			}
 		}
+	}
+	
+	private void eliminate() {
+
+		int posX = 1000;
+		int posY = 1000;
+
+		state.posX = posX;
+		state.posY = posY;
+		
 	}
 
 	private void respawnInRandomCorner() {
