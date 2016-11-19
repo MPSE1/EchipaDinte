@@ -13,7 +13,6 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
-
 public class Connect implements Runnable {
 
 	String serverName = "127.0.0.1";
@@ -29,50 +28,51 @@ public class Connect implements Runnable {
 		int port = 9191;
 		state = new State();
 		try {
-				System.out.println("Connecting to " + serverName + " on port " + port);
-				Socket client = new Socket(serverName, port);
+			System.out.println("Connecting to " + serverName + " on port " + port);
+			Socket client = new Socket(serverName, port);
 
-				System.out.println("Just connected to " + client.getRemoteSocketAddress());
-				OutputStream outToServer = client.getOutputStream();
-				DataOutputStream out = new DataOutputStream(outToServer);
+			System.out.println("Just connected to " + client.getRemoteSocketAddress());
+			OutputStream outToServer = client.getOutputStream();
+			DataOutputStream out = new DataOutputStream(outToServer);
 
-				out.writeUTF("Hello from " + client.getLocalSocketAddress());
-				InputStream inFromServer = client.getInputStream();
-				DataInputStream in = new DataInputStream(inFromServer);
+			out.writeUTF("Hello from " + client.getLocalSocketAddress());
+			InputStream inFromServer = client.getInputStream();
+			DataInputStream in = new DataInputStream(inFromServer);
 
-				String mapFileName = in.readUTF();
-				System.out.println("Server says " + mapFileName);
-				Platform.runLater(new Runnable() {
-					@Override
-					public void run() {
-						Main.readMap(mapFileName);
-					}
-				});
-				while (true) {
-
-					if (stop)
-						break;
-
-					othersState.removeAllElements();
-					// try a move
-					if (state.gameStart == 1)
-						move();
-					synchronized (Lock) {
-						out.writeUTF("" + state.posX);
-						out.writeUTF("" + state.posY);
-						out.writeUTF("" + state.lifes);
-						out.writeUTF("" + state.doctor);
-						out.writeUTF("" + state.gameStart);
-					}
-					Thread.sleep(1);
-					synchronized (Lock) {
-
-						playerNumber = Integer.parseInt(in.readUTF());
-
-						numberOfPlayers = Integer.parseInt(in.readUTF());
-
-						for (int i = 0; i < numberOfPlayers; i++) {
+			String mapFileName = in.readUTF();
+			System.out.println("Server says " + mapFileName);
+			Platform.runLater(new Runnable() {
+				@Override
+				public void run() {
+					Main.readMap(mapFileName);
+				}
+			});
 			
+			while (true) {
+
+				if (stop)
+					break;
+
+				othersState.removeAllElements();
+				// try a move
+				if (state.gameStart == 1)
+					move();
+				synchronized (Lock) {
+					out.writeUTF("" + state.posX);
+					out.writeUTF("" + state.posY);
+					out.writeUTF("" + state.lifes);
+					out.writeUTF("" + state.doctor);
+					out.writeUTF("" + state.gameStart);
+				}
+				Thread.sleep(1);
+				synchronized (Lock) {
+
+					playerNumber = Integer.parseInt(in.readUTF());
+
+					numberOfPlayers = Integer.parseInt(in.readUTF());
+
+					for (int i = 0; i < numberOfPlayers; i++) {
+
 						if (i == playerNumber) {
 							state.posX = Integer.parseInt(in.readUTF());
 							state.posY = Integer.parseInt(in.readUTF());
@@ -84,9 +84,10 @@ public class Connect implements Runnable {
 								Main.playerRectangle.setX(state.posX);
 								Main.playerRectangle.setY(state.posY);
 							}
-							
-							othersState.add(new State(state.posX, state.posY, state.lifes, state.doctor, state.gameStart));
-							
+
+							othersState
+									.add(new State(state.posX, state.posY, state.lifes, state.doctor, state.gameStart));
+
 							if (Main.players.size() <= i) {
 								while (Main.players.size() <= i) {
 									Rectangle rec = new Rectangle();
@@ -94,14 +95,14 @@ public class Connect implements Runnable {
 									Main.players.add(rec);
 								}
 							}
-							
+
 							Main.players.get(i).setX(othersState.lastElement().posX);
 							Main.players.get(i).setY(othersState.lastElement().posY);
 							Main.players.get(i).setWidth(Main.playerSize);
 							Main.players.get(i).setHeight(Main.playerSize);
 							Main.players.get(i).setArcWidth(20);
 							Main.players.get(i).setArcHeight(20);
-							
+
 							if (state.doctor == 0) {
 								Main.playerRectangle.setFill(Color.RED);
 								Main.players.get(i).setFill(Color.RED);
@@ -135,11 +136,13 @@ public class Connect implements Runnable {
 							else
 								doctor = 1;
 							received = in.readUTF();
-							if (received.compareTo("null") != 0)
+							if (received.compareTo("null") != 0) {
 								gameStart = Integer.parseInt(received);
-							else
+
+							} else {
 								gameStart = 1;
-							
+							}
+
 							othersState.add(new State(posX, posY, lifes, doctor, gameStart));
 							Thread.sleep(1);
 							if (Main.players.size() <= i) {
@@ -155,7 +158,7 @@ public class Connect implements Runnable {
 									Main.players.add(rec);
 								}
 							}
-							
+
 							Main.players.get(i).setX(othersState.lastElement().posX);
 							Main.players.get(i).setY(othersState.lastElement().posY);
 							Main.players.get(i).setWidth(Main.playerSize);
@@ -186,69 +189,83 @@ public class Connect implements Runnable {
 
 	}
 
+	static int aliveIndex = -1;
+
 	private void checkGameEnded() {
 		int alive = 0;
-		for (State s : othersState)
+
+		for (State s : othersState) {
 			alive += s.lifes > 0 ? 1 : 0;
+		}
+
+		for (int i = 0; i < othersState.size(); i++) {
+			if (othersState.get(i).lifes > 0)
+				Connect.aliveIndex = i;
+		}
+
 		if (alive == 1) {
 			Platform.runLater(new Runnable() {
 				@Override
 				public void run() {
-					Main.endGame();
-				}});
+					Main.endGame(Integer.toString(aliveIndex));
+				}
+			});
 			try {
 				Thread.currentThread().join();
-			} catch (InterruptedException e) {}
+			} catch (InterruptedException e) {
+			}
 		}
 	}
 
 	private void move() {
 		
 		switch (Main.moveDirection) {
-		
+
 		case UP:
 			if (Main.checkCollisions(KeyCode.UP))
 				state.posY -= Main.playerSpeed;
 			break;
-			
+
 		case DOWN:
 			if (Main.checkCollisions(KeyCode.DOWN))
 				state.posY += Main.playerSpeed;
 			break;
-			
+
 		case LEFT:
 			if (Main.checkCollisions(KeyCode.LEFT))
 				state.posX -= Main.playerSpeed;
 			break;
-			
+
 		case RIGHT:
 			if (Main.checkCollisions(KeyCode.RIGHT))
 				state.posX += Main.playerSpeed;
 			break;
-			
+
 		default:
 			break;
 		}
 	}
-	
+
 	private void checkBadGuyCollision() {
+		
 		for (State s : othersState) {
 			if (s.doctor == 0) {
 				int playerSize = Main.playerSize;
-				
+
 				// Get bad guy center position
-				int badX = s.posX + playerSize/2;
-				int badY = s.posY + playerSize/2;
-				
+				int badX = s.posX + playerSize / 2;
+				int badY = s.posY + playerSize / 2;
+
 				// Get our center position
-				int meX = state.posX + playerSize/2;
-				int meY = state.posY + playerSize/2;
-				
+				int meX = state.posX + playerSize / 2;
+				int meY = state.posY + playerSize / 2;
+
 				// Check collision
 				if (distance(badX, badY, meX, meY) < playerSize) { // I'm dead
-					System.out.println("Player:" + state.posX + ", " + state.posY + "found collision");
+					System.out.println("Player:" + state.posX + ", " + state.posY + " has found collision");
 					state.lifes--;
 					respawnInRandomCorner();
+
 					Platform.runLater(new Runnable() {
 						@Override
 						public void run() {
@@ -259,38 +276,38 @@ public class Connect implements Runnable {
 			}
 		}
 	}
-	
+
 	private void respawnInRandomCorner() {
-		
+
 		int posX, posY;
 		int random = new Random(System.nanoTime()).nextInt(4);
-		
-		switch (random) {
-		
+
+			switch (random) {
+
 			case 0:
 				posX = 0;
 				posY = 0;
 				break;
-				
+
 			case 1:
 				posX = 0;
 				posY = 575;
 				break;
-				
+
 			case 2:
 				posX = 575;
 				posY = 0;
 				break;
-				
+
 			case 3:
 				posX = 575;
 				posY = 575;
 				break;
-				
+
 			default:
 				return;
-		}
-		
+			}
+
 		Main.playerRectangle.setX(posX);
 		Main.playerRectangle.setY(posY);
 		state.posX = posX;
@@ -298,7 +315,7 @@ public class Connect implements Runnable {
 	}
 
 	public double distance(int x1, int y1, int x2, int y2) {
-		
-	    return Math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1));
+
+		return Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
 	}
 }

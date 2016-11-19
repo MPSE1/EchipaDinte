@@ -6,7 +6,6 @@ import java.net.Socket;
 import java.util.Random;
 import java.util.Vector;
 
-
 public class Worker implements Runnable {
 	
 	protected Socket clntSocket = null;
@@ -14,7 +13,7 @@ public class Worker implements Runnable {
 	protected State state;
 	protected int number = -1;
 	protected int minPlayers = 4;
-	protected float gameTime = 1.0f;
+	protected float gameTime = 5.0f;
 	public static Vector<State> allStates = new Vector<State>();
 	public static Object lock = new Object();
 	public static long start;
@@ -28,6 +27,7 @@ public class Worker implements Runnable {
 	private String mapFileName;
 
 	public Worker(Socket clntSocket, String txtFrmSrvr, int numberOfPlayer, String fileName) {
+		
 		this.clntSocket = clntSocket;
 		this.txtFrmSrvr = txtFrmSrvr;
 		this.number = numberOfPlayer;
@@ -58,13 +58,12 @@ public class Worker implements Runnable {
 				state.gameStart = Integer.parseInt(in.readUTF());
 				allStates.set(number, new State(state.posX, state.posY, state.lifes, state.doctor, state.gameStart));
 				// make a decision
-
+				
 				out.writeUTF("" + number);
 				out.writeUTF("" + allStates.size());
 				
 				for (int i = 0; i < allStates.size(); i++) {
 					State sta = allStates.get(i);
-				
 					
 					if (allStates.size() != minPlayers) {
 						first = false;
@@ -89,7 +88,9 @@ public class Worker implements Runnable {
 						out.writeUTF("" + sta.posX);
 						out.writeUTF("" + sta.posY);
 					}
+					
 					out.writeUTF("" + sta.lifes);
+					
 					synchronized (lock) {
 						
 						if (i == nebun) {
@@ -114,10 +115,12 @@ public class Worker implements Runnable {
 								nebun = rand.nextInt(minPlayers);
 								System.out.println(nebun);
 							}
-						if ((System.currentTimeMillis() - start) / 60.0f / 1000.0f > gameTime)
+						if ((System.currentTimeMillis() - start) / 60.0f / 1000.0f > gameTime) {
 							out.writeUTF("" + 0);
-						else
+						}	
+						else {
 							out.writeUTF("" + 1);
+						}
 						
 					} else {
 						out.writeUTF("" + sta.gameStart);
@@ -133,4 +136,5 @@ public class Worker implements Runnable {
 			e.printStackTrace();
 		}
 	}
+	
 }

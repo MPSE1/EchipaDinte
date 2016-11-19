@@ -46,7 +46,7 @@ public class Main extends Application {
 
 	@Override
 	public void start(Stage primaryStage) {
-		
+
 		fPrimaryStage = primaryStage;
 		fPrimaryStage.setTitle("Lives: " + startingLives);
 		playerRectangle.setX(0);
@@ -62,6 +62,7 @@ public class Main extends Application {
 		Rectangle rectangle = new Rectangle(mapSize, mapSize, Color.LIGHTGREY);
 		root.getChildren().add(rectangle);
 		root.getChildren().add(playerRectangle);
+		
 
 		Scene scene = new Scene(root, sceneWidth, sceneHeight);
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
@@ -166,6 +167,7 @@ public class Main extends Application {
 			e.printStackTrace();
 		}
 	}
+	
 
 	private static void addToCollisionMap(int x, int y, int width, int height) {
 
@@ -184,11 +186,12 @@ public class Main extends Application {
 		launch(args);
 	}
 
-	public static void endGame() {
+	public static void endGame(String playerIndex) {
+		
 		Alert alert = new Alert(AlertType.INFORMATION);
 		alert.setTitle("Game has ended");
 		alert.setHeaderText(null);
-		alert.setContentText("Catalin has won!");
+		alert.setContentText("Player " + playerIndex + " has won!");
 		alert.showAndWait();
 		System.exit(0);
 	}
