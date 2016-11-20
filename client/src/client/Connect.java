@@ -281,6 +281,8 @@ public class Connect implements Runnable {
 
 	int maxLives = -1;
 	
+	Connect.aliveIndex = -1;
+	
 	for (int i = 0; i < othersState.size(); i++) {
 		if ( maxLives < othersState.get(i).lifes) {
 			maxLives = othersState.get(i).lifes;
