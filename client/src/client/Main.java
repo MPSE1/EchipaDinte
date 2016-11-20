@@ -26,7 +26,7 @@ public class Main extends Application {
 
 	public static final int playerSpeed = 15;
 	public static final int playerSize = 25;
-	public static final int startingLives = 1;
+	public static final int startingLives = 3;
 	public static final int minPlayers = 4;
 
 	// Small to make testing easier for now
